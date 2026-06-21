@@ -38,7 +38,6 @@ function MiniCart({ isOpen, onClose }) {
   const totalQuantity = cartItems.reduce((total, item) => total + item.quantity, 0)
   const grandTotal = cart.total_price || 0
 
-  // Cegah scrolling background ketika MiniCart terbuka
   useEffect(() => {
     if (isOpen) {
       document.body.style.overflow = 'hidden'
