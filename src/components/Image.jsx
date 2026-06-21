@@ -1,6 +1,7 @@
 function Image({
   fullWidth = false,
   className = '',
+  style,
   ...props
 }) {
   const url = props.src
@@ -9,7 +10,7 @@ function Image({
   return (
     <img className={`ui-image ${
       fullWidth ? 'ui-image-full' : ''
-    } ${className}`.trim()} src={url} alt={alt} />
+    } ${className}`.trim()} src={url} alt={alt} style={style} />
   )
 }
 

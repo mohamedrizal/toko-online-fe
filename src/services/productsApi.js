@@ -11,7 +11,7 @@ export const productsApi = {
       '/admin/product-categories',
       {
         method: 'POST',
-        body: JSON.stringify(payload),
+        body: payload,
       },
       accessToken,
     ),
@@ -20,8 +20,9 @@ export const productsApi = {
     request(
       `/admin/product-categories/${id}`,
       {
-        method: 'PUT',
-        body: JSON.stringify(payload),
+        method: 'POST',
+        body: payload,
+        headers: { 'X-HTTP-Method-Override': 'PUT' },
       },
       accessToken,
     ),

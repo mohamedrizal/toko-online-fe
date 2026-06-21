@@ -11,14 +11,21 @@ export const orderApi = {
       accessToken,
     ),
 
-  getAllOrders: ({ page = 1, perPage = 10 } = {}, accessToken) =>
-    request(
-      `/admin/orders?page=${page}&per_page=${perPage}`,
+  getAllOrders: ({ page = 1, perPage = 10, status, search } = {}, accessToken) => {
+    const query = new URLSearchParams()
+    query.append('page', page)
+    query.append('per_page', perPage)
+    if (status) query.append('status', status)
+    if (search) query.append('search', search)
+    
+    return request(
+      `/admin/orders?${query.toString()}`,
       {
         method: 'GET',
       },
       accessToken,
-    ),
+    )
+  },
 
   updateOrder: (id, payload, accessToken) =>
     request(

@@ -19,7 +19,13 @@ const normalizeCart = (payload) => {
     quantity: cart?.quantity || 0,
     total_price: cart?.total_price || 0,
     items: Array.isArray(cart?.items)
-      ? cart.items.map((item) => ({ product_id: item.product_id, quantity: item.quantity }))
+      ? cart.items.map((item) => ({ 
+          ...item,
+          product_id: item.product_id, 
+          quantity: item.quantity,
+          product_name: item.product_name || item.product?.name,
+          product_price: item.product_price || item.product?.price || item.price
+        }))
       : [],
   }
 }
@@ -35,7 +41,8 @@ export const fetchUserCart = createAsyncThunk('cart/fetchUserCart', async (_, { 
 export const saveCart = createAsyncThunk('cart/saveCart', async (items, { getState, rejectWithValue }) => {
   try {
     const state = getState().cart
-    const payload = { items }
+    // API expect payload.items as [{ product_id, quantity }]
+    const payload = { items: items.map(item => ({ product_id: item.product_id, quantity: item.quantity })) }
     if (!items.length && state.id) {
       await cartApi.deleteCart(state.id, getAccessToken(getState))
       return { id: null, items: [], quantity: 0, total_price: 0 }

@@ -1,7 +1,7 @@
 import { useState } from 'react'
-import { useAppDispatch } from '../../app/hooks'
+import { useAppDispatch, useAppSelector } from '../../app/hooks'
 import { Box, Button, Input, Stack, Text, Heading } from '@chakra-ui/react'
-import { setAuthMode } from './authSlice'
+import { setAuthMode, register } from './authSlice'
 
 const initialForm = {
   name: '',
@@ -13,14 +13,20 @@ const initialForm = {
 
 function Register() {
   const dispatch = useAppDispatch()
+  const { status, error } = useAppSelector((state) => state.auth)
   const [form, setForm] = useState(initialForm)
   const [notice, setNotice] = useState(null)
 
   const handleSubmit = (event) => {
     event.preventDefault()
-    setNotice(
-      'Struktur register sudah siap. Tinggal sambungkan ke endpoint backend register.',
-    )
+    setNotice(null)
+    
+    if (form.password !== form.password_confirmation) {
+      setNotice('Password dan konfirmasi password tidak cocok.')
+      return
+    }
+
+    dispatch(register(form))
   }
 
   return (
@@ -89,10 +95,11 @@ function Register() {
               />
             </Box>
 
+            {error && <Text color="red.500" fontSize="sm" textAlign="center">{error}</Text>}
             {notice && <Text color="brand.500" fontSize="sm" textAlign="center">{notice}</Text>}
 
-            <Button type="submit" colorPalette="brand" w="100%" mt="2">
-              Simpan Draft Register
+            <Button type="submit" colorPalette="brand" w="100%" mt="2" loading={status === 'loading'}>
+              Register
             </Button>
 
             <Button

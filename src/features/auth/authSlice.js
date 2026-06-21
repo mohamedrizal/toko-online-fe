@@ -77,6 +77,19 @@ export const login = createAsyncThunk(
   },
 )
 
+export const register = createAsyncThunk(
+  'auth/register',
+  async (credentials, { rejectWithValue }) => {
+    try {
+      return await authApi.register(credentials)
+    } catch (error) {
+      return rejectWithValue(
+        error instanceof Error ? error.message : 'Register gagal.',
+      )
+    }
+  },
+)
+
 export const refreshAccessToken = createAsyncThunk(
   'auth/refreshAccessToken',
   async (_, { getState, rejectWithValue }) => {
@@ -141,6 +154,37 @@ const authSlice = createSlice({
         state.status = 'failed'
         state.refreshStatus = 'idle'
         state.error = action.payload || 'Login gagal.'
+      })
+      .addCase(register.pending, (state) => {
+        state.status = 'loading'
+        state.error = null
+      })
+      .addCase(register.fulfilled, (state, action) => {
+        const session = createSessionFromResponse(action.payload)
+
+        saveSession(session)
+
+        state.user = session.user
+        state.accessToken = session.accessToken
+        state.tokenType = session.tokenType
+        state.expiresIn = session.expiresIn
+        state.isAuthenticated = true
+        state.status = 'succeeded'
+        state.refreshStatus = 'idle'
+        state.error = null
+        state.authMode = 'login'
+        state.lastTokenRefreshAt = session.lastTokenRefreshAt
+      })
+      .addCase(register.rejected, (state, action) => {
+        clearSession()
+        state.user = null
+        state.accessToken = null
+        state.tokenType = null
+        state.expiresIn = null
+        state.isAuthenticated = false
+        state.status = 'failed'
+        state.refreshStatus = 'idle'
+        state.error = action.payload || 'Register gagal.'
       })
       .addCase(refreshAccessToken.pending, (state) => {
         state.refreshStatus = 'loading'

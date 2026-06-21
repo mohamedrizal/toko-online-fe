@@ -1,5 +1,8 @@
 /* CSS Reset */
-
+body {
+  margin: 0;
+  font-family: "Inter", sans-serif;
+}
 p {
   margin: 0;
 }
@@ -7,8 +10,17 @@ p {
   max-width: 1440px;
   margin: 0 auto;
 }
+a {
+  text-decoration: none;
+  transition: all 0.3s ease;
+}
 button {
   transition: all 0.3s ease;
+}
+input,
+textarea,
+select {
+  box-sizing: border-box;
 }
 
 /* Custom Class UI */
@@ -25,4 +37,8 @@ button {
 }
 .TabWrap {
   border-bottom: 2px solid #fafafa;
+}
+
+.swal2-container {
+  z-index: 9999 !important;
 }

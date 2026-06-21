@@ -1,11 +1,29 @@
-# React + Vite
+# Toko Online Frontend
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Proyek ini adalah *frontend* dari aplikasi Toko Online yang dibangun menggunakan React dan Vite.
 
-Currently, two official plugins are available:
+## Setup Environment Variables (Untuk Clone dari GitHub)
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+Sebelum menjalankan aplikasi, Anda perlu mengatur *environment variables* (variabel lingkungan) terlebih dahulu. Karena file `.env` biasanya tidak ikut di-*commit* ke GitHub (di-*ignore*), Anda harus membuatnya secara manual di komputer Anda.
+
+1. **Buat file `.env` baru** di *root* (folder utama) proyek ini.
+2. Anda bisa menyalin format dari file `.env.example` (jika ada) atau langsung mengisi dengan variabel berikut:
+
+```env
+VITE_API_BASE_URL='http://127.0.0.1:8000/api'
+```
+
+*Catatan: Pastikan `VITE_API_BASE_URL` mengarah ke endpoint backend Laravel/API Anda.*
+
+## Menjalankan Aplikasi
+
+Setelah `.env` dibuat dan dependensi telah diinstal (`npm install`), Anda bisa menjalankan server lokal dengan:
+
+```bash
+npm run dev
+```
+
+---
 
 ## React Compiler
 

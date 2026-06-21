@@ -18,34 +18,25 @@ function MiniCart({ isOpen, onClose }) {
 
   const cart = useAppSelector((state) => state.cart)
   const cartItems = useAppSelector((state) => cart.items)
-  const products = useAppSelector((state) => state.products.items)
 
   const cartDetails = useMemo(() => {
-    return cartItems
-      .map((item) => {
-        const product = products.find((productItem) => productItem.id === item.product_id)
+    return cartItems.map((item) => {
+      const unitPrice = Number(item.product_price || item.price || 0)
+      const totalPrice = unitPrice * item.quantity
 
-        if (!product) {
-          return null
-        }
-
-        const unitPrice = Number(product.price || 0)
-        const totalPrice = unitPrice * item.quantity
-
-        return {
-          product_id: item.product_id,
-          name: product.name,
-          description: product.description || 'Brief description',
-          quantity: item.quantity,
-          unitPrice,
-          totalPrice,
-        }
-      })
-      .filter(Boolean)
-  }, [cartItems, products])
+      return {
+        product_id: item.product_id,
+        name: item.product_name || 'Produk Tidak Ditemukan',
+        description: item.description || 'Brief description',
+        quantity: item.quantity,
+        unitPrice,
+        totalPrice,
+      }
+    })
+  }, [cartItems])
 
   const totalQuantity = cartItems.reduce((total, item) => total + item.quantity, 0)
-  const grandTotal = cartDetails.reduce((total, item) => total + item.totalPrice, 0)
+  const grandTotal = cart.total_price || 0
 
   // Cegah scrolling background ketika MiniCart terbuka
   useEffect(() => {
@@ -130,7 +121,7 @@ function MiniCart({ isOpen, onClose }) {
         direction="column" 
         position="absolute" 
         top="0" 
-        right="0" 
+        right="40px" 
         w={{ base: '100%', md: '360px' }} 
         h="100%" 
         bg="white" 

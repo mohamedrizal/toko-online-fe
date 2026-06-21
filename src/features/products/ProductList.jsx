@@ -165,6 +165,7 @@ function ProductList({ activeTab = 'ALL', setActiveTab }) {
             bg="transparent"
             padding="0"
             border="none"
+            cursor="pointer"
             _hover={{ color: 'brand.400' }}
           >
             Previous
@@ -181,6 +182,7 @@ function ProductList({ activeTab = 'ALL', setActiveTab }) {
             bg="transparent"
             padding="0"
             border="none"
+            cursor="pointer"
             _hover={{ color: 'brand.400' }}
           >
             Next
