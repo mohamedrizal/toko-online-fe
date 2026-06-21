@@ -1,10 +1,9 @@
 import { useEffect, useState } from 'react'
-import { Box, Grid, Flex, Heading, Text, VStack } from '@chakra-ui/react'
+import { Box, Grid, Flex, Heading, Text, VStack, Image } from '@chakra-ui/react'
 import { productsApi } from '../../services/productsApi'
 import { useAppSelector } from '../../app/hooks'
 
-// --- Dummy Icons (Menggantikan gambar icon) ---
-// Warna SVG kita set 'currentColor' agar bisa dikendalikan oleh properti color Box dari luar
+
 const BroccoliIcon = () => <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><path d="M12 2v2M6.05 5.05l1.41 1.41M17.95 5.05l-1.41 1.41M4 12h2M18 12h2M6.05 18.95l1.41-1.41M17.95 18.95l-1.41-1.41M12 20v2"></path><circle cx="12" cy="12" r="4"></circle></svg>
 const BreadIcon = () => <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg>
 const BottleIcon = () => <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><path d="M10 2v4.26l-2.5 3.5C7.18 10.18 7 10.58 7 11v10a1 1 0 0 0 1 1h8a1 1 0 0 0 1-1V11c0-.42-.18-.82-.5-1.24L14 6.26V2H10z"></path><line x1="7" y1="15" x2="17" y2="15"></line></svg>
@@ -25,12 +24,10 @@ function CategoryGrid({ onCategoryClick }) {
   const [categories, setCategories] = useState([])
   const [isLoading, setIsLoading] = useState(true)
   const [error, setError] = useState(null)
-  
-  // Ambil token dari Redux store
+
   const { accessToken } = useAppSelector((state) => state.auth)
 
   useEffect(() => {
-    // Jika backend wajibkan login untuk ambil kategori, kita skip fetch jika tidak ada token
     if (!accessToken) {
       setIsLoading(false)
       setError('Silakan login untuk melihat kategori')
@@ -62,7 +59,7 @@ function CategoryGrid({ onCategoryClick }) {
     return () => {
       isMounted = false
     }
-  }, [accessToken]) // fetch ulang jika token berubah
+  }, [accessToken])
 
   if (error) {
     return (
@@ -73,7 +70,6 @@ function CategoryGrid({ onCategoryClick }) {
     )
   }
 
-  // Jika data masih kosong atau loading, kita buat 6 kotak kosong sebagai placeholder
   const displayItems = isLoading || categories.length === 0 
     ? Array.from({ length: 6 }) 
     : categories
@@ -82,14 +78,12 @@ function CategoryGrid({ onCategoryClick }) {
     <Box mb="8">
       <Heading size="lg" mb="6" color="gray.800">Category</Heading>
       
-      {/* Grid container responsif: 2 kolom (mobile), 3 kolom (tablet), 5 kolom (desktop) */}
       <Grid 
         templateColumns={{ base: 'repeat(2, 1fr)', md: 'repeat(3, 1fr)', lg: 'repeat(5, 1fr)' }} 
         gap="6" 
         pb="4"
       >
         {displayItems.map((cat, index) => {
-          // Ambil icon berurutan dari array DUMMY_ICONS (looping ulang jika habis)
           const dummyConfig = DUMMY_ICONS[index % DUMMY_ICONS.length]
           const isPlaceholder = !cat?.id
 
@@ -112,14 +106,18 @@ function CategoryGrid({ onCategoryClick }) {
               onClick={() => {
                 if (!isPlaceholder && onCategoryClick) {
                   onCategoryClick(cat.name)
-                  
-                  // Opsional: Scroll halus ke bagian ProductList setelah diklik
                   window.scrollBy({ top: 300, behavior: 'smooth' })
                 }
               }}
             >
-              <Box color={dummyConfig.color} mb="4">
-                {dummyConfig.icon}
+              <Box mb="4" w="40px" h="40px" display="flex" alignItems="center" justifyContent="center">
+                {isPlaceholder ? (
+                  <Box color={dummyConfig.color}>{dummyConfig.icon}</Box>
+                ) : cat.icon ? (
+                  <Image src={cat.icon} alt={cat.name} w="100%" h="100%" objectFit="contain" />
+                ) : (
+                  <Box color={dummyConfig.color}>{dummyConfig.icon}</Box>
+                )}
               </Box>
               <Text 
                 fontSize="sm" 
